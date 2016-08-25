@@ -1,0 +1,16 @@
+{
+  "globalDependencies": {
+    "async": "registry:dt/async#2.0.1+20160804113311",
+    "body-parser": "registry:dt/body-parser#0.0.0+20160619023215",
+    "express": "registry:dt/express#4.0.0+20160708185218",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160819131900",
+    "lodash": "registry:dt/lodash#4.14.0+20160817155621",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "mongoose": "registry:dt/mongoose#4.5.4+20160807120805",
+    "node": "registry:dt/node#6.0.0+20160823142437",
+    "redis": "registry:dt/redis#0.12.1+20160818110030",
+    "request": "registry:dt/request#0.0.0+20160726020908",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "swig": "registry:dt/swig#0.0.0+20160316155526"
+  }
+}
