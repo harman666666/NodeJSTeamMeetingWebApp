@@ -11,6 +11,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "hjs": "~0.0.6",
+    "mongoose": "^4.5.10",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0",
     "swig": "^1.4.2"

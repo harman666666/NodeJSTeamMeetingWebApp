@@ -12,8 +12,16 @@ var app = express();
 
 import * as Swig from 'swig';
 
+
 //assign the swig view engine to handle .html files
 var swig = Swig;
+
+var mongoose = require('mongoose');
+//Connect To Mongoose to MongoLab Online Server 
+//Mongolab provides URL as   mongodb://<dbuser>:<dbpassword>@ds044229.mlab.com:44229/teammeetings
+//Create a user and add details 
+
+mongoose.connect('mongodb://harman666666:123456@ds044229.mlab.com:44229/teammeetings')
 
 app.engine('html', swig.renderFile); //=> Change view engine to swig
 

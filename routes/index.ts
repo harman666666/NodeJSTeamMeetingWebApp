@@ -1,23 +1,29 @@
 //var express = require('express');
-"use strict";
-var express = require('express');
-var router = express.Router();
+
+import * as express from 'express';
+
+var router  = express.Router();
 var standupCtrl = require('../controllers/standup.server.controller.js');
+
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('index', { title: 'Express' });
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
 });
+
 //SETUP ROUTES FOR OUR standup.server.controller.ts
 /* GET New Note Page. */
-router.get('/newnote', function (req, res) {
+router.get('/newnote', function(req, res){
     return standupCtrl.getNote(req, res);
 });
-router.post('/newnote', function (req, res) {
-    return standupCtrl.create(req, res);
-});
-/* Was able to post this data using postman on the post route /newnote:
 
-{
+router.post('/newnote', function(req, res){
+  return standupCtrl.create(req,res);
+});
+
+/* Was able to post this data using postman on the post route /newnote: 
+
+{  
    "memberName":"Bob",
    "project":"matrix",
    "workYesterday":"Build Out the Standup Meeting Node",
@@ -25,6 +31,7 @@ router.post('/newnote', function (req, res) {
    "impediment":"None"
 }
 */
+
 module.exports = router;
 /*
 To start file look at the scripts section of package.json
@@ -50,19 +57,19 @@ To start file look at the scripts section of package.json
 
 The script start starts the application,
 you can redifine and call nodemon ./bin/www rather than node here
-as a shortcut with node start.
+as a shortcut with node start. 
 
 
 Using MongoLab to deploy database in cloud
 When connecting to MongoLab, we create a database called teammeetings.
-Then we get this information:
+Then we get this information: 
 
 To connect using the mongo shell:
 mongo ds044229.mlab.com:44229/teammeetings -u <dbuser> -p <dbpassword>
 To connect using a driver via the standard MongoDB URI (what's this?):
   mongodb://<dbuser>:<dbpassword>@ds044229.mlab.com:44229/teammeetings
 
-  When connecting in robo mongo for address put:
+  When connecting in robo mongo for address put: 
   ds044229.mlab.com
  For port put: 44229
  Then in authentication tab put:
@@ -97,17 +104,17 @@ var customerSchema = new Schema({
 });
 
 //To Build a Mongoose model from this schema, we simply need to pass into the mongoose model method
-//First parameter is name of model, and second is the schema we want to build this model from
+//First parameter is name of model, and second is the schema we want to build this model from 
 //A third optional parameter would specify the mongodb collection name you would want document instances of this
-//model to be saved in
-//Since I have not supplied that here, mongoose will provide a collection name from the model name given
+//model to be saved in 
+//Since I have not supplied that here, mongoose will provide a collection name from the model name given 
 //Mongoose will attempt to pluralize the model name, so we may end up with Customers with an s for the collection name
 //If thats not the desired result or if the collection already exists and perhaps you need to match that name, simply
-//provide that as the third argument
+//provide that as the third argument 
 
-var Customer = mongoose.model('Customer', customerSchema);
+var Customer = mongoose.model('Customer', customerSchema); 
 
-//You can customize schema further to create more varied models from the same schema
+//You can customize schema further to create more varied models from the same schema 
 customerSchema.add({discountCode: String});
 
 var DiscountedCustomer = mongoose.model('DiscountedCustomer', customerSchema);
@@ -148,11 +155,11 @@ name: {
         last: String
       },
 address: [addressSchema] //Notice also we are allowing for an array of addresses
-createdOn: {type: Date, default: Date.now},
+createdOn: {type: Date, default: Date.now}, 
 isActive: {type: Boolean, default: true}
 });
 
-//Used object as schema type for createdOn and isActive fields.
+//Used object as schema type for createdOn and isActive fields. 
 //The object specifies the schema type, but also allows us to specify a default value
 
 
@@ -181,12 +188,12 @@ displayOrder: Number
 var subQuestions = new Schema({
   questionType: String, //Naming this type vs naming this questionType
                         //In the mongose schema, the use of type has a special meaning
-  questionText: String,
+  questionText: String, 
   answers: [subAnswers]
 }); => Lets change this schema to a bad schema which just uses the name type
 
 var subQuestions = new Schema ({
-  type: String, //What Mongoose is gunna do is look at that and cast the questions array in the main document
+  type: String, //What Mongoose is gunna do is look at that and cast the questions array in the main document 
                 //to type string which is bad
   text: String,
   answers: [subAnswers]
@@ -194,8 +201,8 @@ var subQuestions = new Schema ({
 }); => But you need and what the property name to be type so how can you fix this. Do this:
 
 var subQuestions = new Schema ({
-  type: {type: String}, //Here we can retain the property name of type and to do this we have to pass in an object for
-                        //the schema type. now doc saved in mongodb as you expect
+  type: {type: String}, //Here we can retain the property name of type and to do this we have to pass in an object for  
+                        //the schema type. now doc saved in mongodb as you expect 
   text: String,
   answers: [subAnswers]
 
@@ -209,6 +216,6 @@ var subQuestions = new Schema ({
    description: String,
    categories: [subCategory],
    questions: [subQuestions]
- });
+ }); 
 
 */
