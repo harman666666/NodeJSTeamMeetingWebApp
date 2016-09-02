@@ -1,7 +1,8 @@
 import * as Mongoose from 'mongoose';
 import * as express from 'express';
+import * as EventEmitter from 'events';
 
-var Standup  = require('../models/standup.server.model.js');
+var Standup: Mongoose._mongoose.IModelConstructor<{}> & EventEmitter.EventEmitter = require('../models/standup.server.model.js');
 
 exports.create = function(req: express.Request, res: express.Response) { //create function we will use to save form data to mongodb with
     //We will obtain the form data from the request argument that is passed into our function
@@ -25,7 +26,29 @@ exports.getNote = function(req:express.Request, res: express.Response){
     res.render('newnote', {title: 'Standup - New Note'});
 }
 
+exports.list = function(req: express.Request,res: express.Response){
+ var query = Standup.find();
+ query.sort({createdOn: 'desc'}) //ask it to be sorted on date in descending order
+      .limit(12) //Specifies maximum number of results query will return and cannot be used with distinct 
+      .exec(function(err, results){
+          res.render('index', {title: 'Standup - List', notes: results}); //This is how you send data to view
+      });
+};
 
+exports.filterByMember = function(req: express.Request, res : express.Response){
+    var query = Standup.find();
+    var filter = req.body.memberName;
+
+    query.sort({createdOn: 'desc'});
+
+    if(filter.length > 0){ //If the user actually sent a filter result, a memberName, string length
+        query.where({memberName: filter})
+    }
+
+    query.exec(function(err, results){
+        res.render('index', {title: 'Standup - List', notes: results});
+    });
+};
 
 /*
 What is the difference between exports and module.exports in Node.js?

@@ -250,6 +250,7 @@ Customer.update(condition, update, {multi: true}, function(err, raw){
 
 
 */
+
 /*
 var condition = {memberName: 'Mary'};
 var update = {impediment: 'None - Mary no longer works here!' };
@@ -269,6 +270,7 @@ Standup.findOne({ memberName: 'Mary' }, function (err, doc) {
     });
 });
 */
+
 //REMOVING///////////////////////
 //Signiture => Model.remove(conditions, [callback])
 

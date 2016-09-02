@@ -8,7 +8,7 @@ var standupCtrl = require('../controllers/standup.server.controller.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  return standupCtrl.list(req,res); //This is why you should make an interface for your controllers for intellisense 
 });
 
 //SETUP ROUTES FOR OUR standup.server.controller.ts
@@ -19,6 +19,10 @@ router.get('/newnote', function(req, res){
 
 router.post('/newnote', function(req, res){
   return standupCtrl.create(req,res);
+});
+
+router.post('/', function(req, res){
+  return standupCtrl.filterByMember(req, res);
 });
 
 /* Was able to post this data using postman on the post route /newnote: 

@@ -18,6 +18,25 @@ exports.create = function (req, res) {
 exports.getNote = function (req, res) {
     res.render('newnote', { title: 'Standup - New Note' });
 };
+exports.list = function (req, res) {
+    var query = Standup.find();
+    query.sort({ createdOn: 'desc' }) //ask it to be sorted on date in descending order
+        .limit(12) //Specifies maximum number of results query will return and cannot be used with distinct 
+        .exec(function (err, results) {
+        res.render('index', { title: 'Standup - List', notes: results }); //This is how you send data to view
+    });
+};
+exports.filterByMember = function (req, res) {
+    var query = Standup.find();
+    var filter = req.body.memberName;
+    query.sort({ createdOn: 'desc' });
+    if (filter.length > 0) {
+        query.where({ memberName: filter });
+    }
+    query.exec(function (err, results) {
+        res.render('index', { title: 'Standup - List', notes: results });
+    });
+};
 /*
 What is the difference between exports and module.exports in Node.js?
 You must be familiar with the exports object in Node.js modules, using which you create
