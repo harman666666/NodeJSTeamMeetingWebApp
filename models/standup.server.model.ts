@@ -12,14 +12,52 @@ import {Mongoose} from 'mongoose';
 var mongoose: Mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+//Custom Validators: 
+
+var memberNameValidator = [
+    function(val: string) {
+        return (val.length > 0 && val.toLocaleLowerCase() != 'none')
+    },
+    //Custom error text...
+    'Select a valid member name.' ];
+
+var requiredStringValidator = [
+    function(val){
+        var testVal = val.trim();
+        return (testVal.length > 0)
+    }, 
+    //Custom error text...
+    '{Path} cannot be empty'
+];
+
 var standupSchema = new Schema({
-    memberName: String,
-    project: String,
-    workYesterday: String, 
-    workToday: String,
-    impediment: String, 
+    memberName: {
+        type: String,
+        required: true,
+        validate: memberNameValidator
+    },
+    project: {
+        type: String,
+        required: true, 
+        validate: requiredStringValidator
+    },
+    workYesterday: {
+        type: String,
+        required: true,
+         validate: requiredStringValidator
+    },
+    workToday: {
+        type: String,
+        required: true,
+         validate: requiredStringValidator
+    },
+    impediment: {
+        type: String,
+        required: true,
+        default: 'none'
+    },
     //createdOn: Date, but we want a current date or time automatically set, so use default value
-    createdOn: {type: Date, default: Date.now} 
+    createdOn: { type: Date, default: Date.now }
     //You may have noticed that we are not defining an id field here 
     //You may have noticed underscore id field in sample document 
     //If you do not define an id field, mongoose will create one for us by default

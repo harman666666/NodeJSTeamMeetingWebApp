@@ -81,6 +81,7 @@ Click the “Add database user” button to create a new user
  User Name: dbuser
  Password: dbpassword
 
+For more tools to use for mongodb for help with sharding and such, go to the mongodb website
 ///////////////////////////////////////////////////////////////////////////
 
 Simple Schema Example

@@ -37,7 +37,13 @@
             <p class="lead">Use this form to enter your daily meeting notes...</p>
         </div>
 
-<!--HERE IS THE FORM. It does a post. -->
+        {% if message.length > 0 %} <!--Renders an html block or not using swig depending on the message length -->
+        <div class="alert alert-danger alert-error">
+            {{message}}
+        </div>
+        {% endif %}
+
+        <!--HERE IS THE FORM. It does a post. -->
 
         <form class="form-horizontal" action="newnote" method="post">
             <fieldset>

@@ -10,9 +10,23 @@ exports.create = function (req, res) {
         workToday: req.body.workToday,
         impediment: req.body.impediment
     });
-    entry.save(); //Usually you want to pass a callback function for errors. 
-    //redirect to home page...
-    res.redirect(301, '/'); //301 response code and slash 
+    //Validate now...Using custom validator, this will work but lets add our validation to the schema. 
+    /*
+    entry.schema.path('memberName').validate(function(value: string){
+        return value.toLocaleLowerCase() != 'none';
+    }, 'You must select a team member name.');
+    */
+    entry.save(function (err) {
+        if (err) {
+            var errMsg = "Sorry, there was an error saving the stand-up meeting note. " + err;
+            res.render('newnote', { title: 'Standup - New Note (error)', message: errMsg });
+        }
+        else {
+            console.log('Stand-up meeting note was saved!');
+            //Redirect to the homepage to display list of notes...
+            res.redirect(301, '/'); //301 response code and slash 
+        }
+    });
 }; //Lets use postman to test this 
 //This method will render a view called newnote for us, and pass in a title called Standup - New Note
 exports.getNote = function (req, res) {
@@ -37,6 +51,136 @@ exports.filterByMember = function (req, res) {
         res.render('index', { title: 'Standup - List', notes: results });
     });
 };
+/*
+MongoDB Validation
+
+Built In Validators: Validators in Mongoose job is to ensure the data you are passing into mongodb falls within the ////////////
+                     specified guidelines set forth by the schema.
+
+All Schema Types, String, Number, Date, Buffer, Boolean, Mixed, ObjectId, Array have a "required" Built-in Validator
+String also has "enum" and "match" built in validators
+Number has "min" and "max" built in  validators
+
+//Required Validator example
+
+var reMatch = /[a-zA-Z]/; //This is the regular expression, states to only allow alphabets upper or lower, no numbers
+var states = ['california', 'ontario', 'florida', 'quebec']; //Used in enum validator, string can only one of these states defined
+                          
+var customerSchema = new Schema({
+    name: {type: String,
+           required: true, //included required validator,
+           match: reMatch}, //included Match Validator which ensures string follows regular expression
+    address: String,
+    city: String,
+    state: {type: String,
+            required: true,
+            enum: states } //validator ensures string value found within an enumerated list of strings
+                           //When string entered which is not in this list, enum validator will return false and pass the
+                           //default error message for this validator to the callback
+    country: String
+    discount: {type: Number,
+               min: 5, //min validator ensures discount value must be greater than or equal to min
+               max: 60} //max validator ensures discount less than or equal to 60
+});
+
+// After the schema is defined - via the path API
+customerSchema.path('city').required(true, 'Ooops! Supply a City.') //has optional error message
+//This is how you make things required after schema has been defined by making the path required
+
+//Signiture = required(required, [message])
+
+//String - Match Validator example
+
+Introduction to Middleware/////////////////////////////////////////////////////////////////////////////////////////////////
+A document is an instance of a mongoose model. These instance documents have static helper methods avaiable to them.
+Middleware are functions which are given control over execution flow for the following methods: init, validate, save, remove.
+We will only be discussing middleware for the save method.
+
+//Middleware execution flow example...
+var personSchema = new Schema({
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
+    status: {type: String, required: true, default: 'Alive'}
+});
+
+//Build a model from the person Schema
+var Person = new mongoose.model('Person', personSchema);
+
+//New document instance of a Person model
+var newPerson = new Person({firstName: 'John', lastName: 'Doe'});
+
+//Save the document... Internal validation(required) kicks off now
+newPerson.save(function(err){
+    if(err) return handleError(err);
+    //saved the person doc
+});
+//Flow of execution around save is this
+Save is Called =>
+Default values which are defined in the Schema are applied =>
+Validation is performed =>
+Error Generated and recieved by callback if validation fails
+Otherwise
+We are good to go since the document is saved
+
+Here is a custom validator: ///////////////////////////////////////////////////////////////////////////////////
+
+//Custom Validation Signiture => validate(obj, [errMsg])
+//Takes 2 arguments, predicate and optional error value arg
+//A validator will always recieve the value you wish to validate as the first argument
+
+var sizeValidator = [
+    function(val){
+        return (val.lenght > 0 && val.length <= 50)
+    },
+    //Customer error text... if not supplied, generic error message template used
+    'String must be between 1 and 50 characters long' ];
+
+//Use custom validator:
+
+var personSchema = new Schema({
+    firstName: {type: String, required: true, validate: sizeValidator},
+    lastName: {type: String, required: true, validate: sizeValidator},
+    status: {type: String, required: true, default: 'Alive'}
+});
+Customize error message template ////////////////////////////////////////////////////////////////////////
+
+You can also customize the error template message for the built in validators
+
+These are the default error messages provided by mongoose:
+You can overwrite these template messages either on a schema by schema basis or even globally for
+every schema. Uses these variables => {PATH}, {VALUE}, {TYPE}, {MIN}, {MAX}
+
+var msg = module.exports = exports = {};
+msg.general = {};
+msg.general.default = "Validator failed for path '{PATH}' with value  '{VALUE}'";
+msg.general.required = "Path '{PATH}' is required.";
+
+msg.Number = {};
+msg.Number.min = "Path '{PATH}' ({VALUE}) is less than the minimum allowed value ({MIN}).";
+msg.Number.max = "Path '{PATH}' ({VALUE}) is more than the maximum allowed value ({MAX}).";
+
+msg.String = {};
+msg.String.enum = "'{VALUE}' is not a valid enum value for path '{PATH}'.";
+msg.String.match = "Path '{PATH}' is invalid ({VALUE}).";
+
+//Here is how to override:
+mongoose.Error.message.Number.min = "{PATH} is too low! Must be atleast {MIN}.";
+
+The error message will come when you do this:
+
+newPerson.save(function(err){
+    if (err){
+        console.log('Sorry, there was an error: ' + err); <= error message here in err
+    }
+    else{
+        console.log('Your person was saved!');
+    }
+});
+
+// To show user error message, pass back
+res.render('index', {title: 'Page Title Here', message: errMsg });
+
+*/
 /*
 What is the difference between exports and module.exports in Node.js?
 You must be familiar with the exports object in Node.js modules, using which you create
